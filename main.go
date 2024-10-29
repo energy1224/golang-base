@@ -47,7 +47,7 @@ func main() {
 		targetCurrency = target
 		break
 	}
-	result = calculate(baseCurrency, targetCurrency, inputSum)
+	result = convert(baseCurrency, targetCurrency, inputSum)
 	fmt.Printf("Вы получили %.2f %s ", result, targetCurrency)
 
 }
@@ -89,7 +89,7 @@ func getUserSum(base string) (float64, error) {
 	return sum, nil
 }
 
-func calculate(baseCurrency string, targetCurrency string, sum float64) float64 {
+func convert(baseCurrency string, targetCurrency string, sum float64) float64 {
 	var result float64
 	if baseCurrency == usd && targetCurrency == eur {
 		result = sum * USDeur
