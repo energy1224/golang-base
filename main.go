@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"os"
+	"strconv"
+	"strings"
 )
 
 const USDeur = 0.92
@@ -52,18 +56,22 @@ func main() {
 
 }
 func getUserCurrency() (string, error) {
-	var baseCurrency string
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Введите исходную валюту: 'eur' ,'usd' или 'rub'.")
-	fmt.Scan(&baseCurrency)
-	if baseCurrency == eur || baseCurrency == usd || baseCurrency == rub {
-		return baseCurrency, nil
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return "", errors.New("INPUT_ERROR")
+	}
+	input = strings.TrimSpace(input)
+	if input == eur || input == usd || input == rub {
+		return input, nil
 	}
 	return "", errors.New("NO_PARAMS_ERROR")
 }
 
 func getTargetCurrency(base string) (string, error) {
 	var message string
-	var target string
+	reader := bufio.NewReader(os.Stdin)
 	if base == eur {
 		message = "Введите нужную валюту:'usd' или 'rub'."
 	} else if base == usd {
@@ -72,20 +80,35 @@ func getTargetCurrency(base string) (string, error) {
 		message = "Введите нужную валюту:'eur' или 'usd'."
 	}
 	fmt.Println(message)
-	fmt.Scan(&target)
-	if target == eur || target == usd || target == rub && target != base {
-		return target, nil
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return "", errors.New("INPUT_ERROR")
+	}
+	input = strings.TrimSpace(input)
+	if input == eur || input == usd || input == rub && input != base {
+		return input, nil
 	}
 	return "", errors.New("NO_PARAMS_ERROR")
 }
 
 func getUserSum(base string) (float64, error) {
-	var sum float64
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Printf("Введите какое колличество %s вы хотите поменять.\n", base)
-	fmt.Scan(&sum)
-	if sum <= 0 {
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return 0, errors.New("INPUT_ERROR")
+	}
+	input = strings.TrimSpace(input)
+
+	input = strings.ReplaceAll(input, ",", ".")
+
+	sum, err := strconv.ParseFloat(input, 64)
+
+	if err != nil || sum <= 0 {
+
 		return 0, errors.New("NO_PARAMS_ERROR")
 	}
+	
 	return sum, nil
 }
 
